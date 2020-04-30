@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
                 //TODO: add more permitAll url after implementation
+                .pathMatchers("/sandbox/bundle/**", "/sandbox/bundle/resource/**").permitAll()
                 .pathMatchers("/account/login", "/account/registration", "/account/confirm").permitAll()
                 .pathMatchers("/account/refresh").hasAuthority(ROLE_REFRESHER.name())
                 .anyExchange().hasAuthority(ROLE_ACCESSOR.name())

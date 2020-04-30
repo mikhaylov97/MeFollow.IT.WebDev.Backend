@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface AuthenticationParameterRepository extends AbstractRepository<AuthenticationParameter> {
-    Mono<AuthenticationParameter> findFirstByUserIdAndAuthenticationProvider(String userId, AuthenticationProvider provider);
+    Mono<AuthenticationParameter> findByUserIdAndAuthenticationProvider(String userId, AuthenticationProvider provider);
     Mono<IndirectAuthenticationParameter> findFirstByExternalIdAndAuthenticationProvider(String externalId, AuthenticationProvider provider);
     Flux<IndirectAuthenticationParameter> findAllByUserId(String userId);
 

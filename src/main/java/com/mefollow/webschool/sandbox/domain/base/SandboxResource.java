@@ -1,26 +1,26 @@
-package com.mefollow.webschool.sandbox.domain;
+package com.mefollow.webschool.sandbox.domain.base;
 
 import com.mefollow.webschool.core.domain.BaseModel;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "sandbox-resources")
 public class SandboxResource extends BaseModel {
-    private String userId;
+    private String bundleId;
     private String content;
     private SandboxResourceType type;
 
-    public SandboxResource(String userId, String content, SandboxResourceType type) {
-        this.userId = userId;
+    public SandboxResource(String bundleId, String content, SandboxResourceType type) {
+        this.bundleId = bundleId;
         this.content = content;
         this.type = type;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getBundleId() {
+        return bundleId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setBundleId(String bundleId) {
+        this.bundleId = bundleId;
     }
 
     public String getContent() {

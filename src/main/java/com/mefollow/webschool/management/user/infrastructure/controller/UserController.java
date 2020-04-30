@@ -40,7 +40,7 @@ public class UserController extends ExceptionInterceptor {
     }
 
     @PostMapping(value = "/registration")
-    public Mono<User> registration(@RequestBody @Valid RegistrationViaFormCommand command) {
+    public Mono<BaseModel> registration(@RequestBody @Valid RegistrationViaFormCommand command) {
         return registrationViaFormHandler.handle(command);
     }
 

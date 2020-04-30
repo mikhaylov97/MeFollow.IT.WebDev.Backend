@@ -5,8 +5,8 @@ import com.mefollow.webschool.sandbox.infrastructure.repository.SandboxResourceR
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import static com.mefollow.webschool.sandbox.domain.SandboxResourceException.SANDBOX_RESOURCE_FORBIDDEN;
-import static com.mefollow.webschool.sandbox.domain.SandboxResourceException.SANDBOX_RESOURCE_NOT_FOUND;
+import static com.mefollow.webschool.sandbox.domain.base.SandboxException.SANDBOX_RESOURCE_FORBIDDEN;
+import static com.mefollow.webschool.sandbox.domain.base.SandboxException.SANDBOX_RESOURCE_NOT_FOUND;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 
@@ -25,11 +25,11 @@ public class DeleteSandboxResourceHandler {
     public Mono<Void> handle(final DeleteSandboxResourceCommand command) {
         return sandboxResourceRepository.findById(command.getSandboxResourceId())
                 .switchIfEmpty(error(SANDBOX_RESOURCE_NOT_FOUND))
-                .flatMap(sandboxResource -> userRepository.findById(sandboxResource.getUserId())
-                        .flatMap(sandboxResourceOwner -> {
-                            if (sandboxResourceOwner.getId().equals(command.getUserId()) || command.getUser().isGlobalAdmin()) return just(sandboxResource);
-                            else return error(SANDBOX_RESOURCE_FORBIDDEN);
-                        }))
+//                .flatMap(sandboxResource -> userRepository.findById(sandboxResource.getUserId())
+//                        .flatMap(sandboxResourceOwner -> {
+//                            if (sandboxResourceOwner.getId().equals(command.getUserId()) || command.getUser().isGlobalAdmin()) return just(sandboxResource);
+//                            else return error(SANDBOX_RESOURCE_FORBIDDEN);
+//                        }))
                 .flatMap(sandboxResourceRepository::delete);
     }
 }

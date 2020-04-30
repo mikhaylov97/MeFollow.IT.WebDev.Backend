@@ -55,7 +55,7 @@ public class LoginViaFormHandler {
     public Mono<BaseModel> handle(final LoginViaFormCommand command) {
         final var model = model();
         return userRepository.findFirstByEmailIgnoreCaseAndBannedFalse(command.getEmail())
-                .flatMap(user -> authenticationParameterRepository.findFirstByUserIdAndAuthenticationProvider(user.getId(), PASSWORD)
+                .flatMap(user -> authenticationParameterRepository.findByUserIdAndAuthenticationProvider(user.getId(), PASSWORD)
                         .cast(DirectAuthenticationParameter.class)
                         .flatMap(authenticationParameter ->
                                 user.isDefaultPassword()
