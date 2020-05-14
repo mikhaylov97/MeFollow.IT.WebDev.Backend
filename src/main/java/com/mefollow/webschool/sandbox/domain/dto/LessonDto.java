@@ -6,12 +6,15 @@ import com.mefollow.webschool.sandbox.domain.base.Lesson;
 
 public class LessonDto {
     private String id;
+    private String chapterId;
     private int lessonOrderIndex;
     private String lessonTitle;
     private String lessonDescription;
     private int chapterOrderIndex;
     private String chapterDescription;
     private int numberOfChapters;
+    private boolean solved;
+    private boolean displayTheory;
     private boolean enabledHtml;
     private boolean enabledCss;
     private boolean enabledJs;
@@ -25,14 +28,17 @@ public class LessonDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String jsContent;
 
-    public LessonDto(Lesson lesson, Chapter chapter, int numberOfChapters, String bundleId, String bundleUrl) {
+    public LessonDto(Lesson lesson, Chapter chapter, int numberOfChapters, boolean solved, boolean displayTheory, String bundleId, String bundleUrl) {
         this.id = lesson.getId();
+        this.chapterId = chapter.getId();
         this.lessonOrderIndex = lesson.getOrderIndex();
         this.lessonTitle = lesson.getTitle();
         this.lessonDescription = lesson.getDescription();
         this.chapterOrderIndex = chapter.getOrderIndex();
         this.chapterDescription = chapter.getDescription();
         this.numberOfChapters = numberOfChapters;
+        this.solved = solved;
+        this.displayTheory = displayTheory;
         this.enabledHtml = chapter.isHtmlEnabled();
         this.enabledCss = chapter.isCssEnabled();
         this.enabledJs = chapter.isJsEnabled();
@@ -46,6 +52,15 @@ public class LessonDto {
 
     public LessonDto setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getChapterId() {
+        return chapterId;
+    }
+
+    public LessonDto setChapterId(String chapterId) {
+        this.chapterId = chapterId;
         return this;
     }
 
@@ -100,6 +115,24 @@ public class LessonDto {
 
     public LessonDto setNumberOfChapters(int numberOfChapters) {
         this.numberOfChapters = numberOfChapters;
+        return this;
+    }
+
+    public boolean isSolved() {
+        return solved;
+    }
+
+    public LessonDto setSolved(boolean solved) {
+        this.solved = solved;
+        return this;
+    }
+
+    public boolean isDisplayTheory() {
+        return displayTheory;
+    }
+
+    public LessonDto setDisplayTheory(boolean displayTheory) {
+        this.displayTheory = displayTheory;
         return this;
     }
 

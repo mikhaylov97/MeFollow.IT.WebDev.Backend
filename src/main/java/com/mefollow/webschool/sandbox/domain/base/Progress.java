@@ -8,11 +8,13 @@ public class Progress extends BaseModel {
     private String userId;
     private String chapterId;
     private String courseId;
+    private boolean solved;
 
     public Progress(String userId, String chapterId, String courseId) {
         this.userId = userId;
         this.chapterId = chapterId;
         this.courseId = courseId;
+        this.solved = false;
     }
 
     public String getUserId() {
@@ -37,5 +39,13 @@ public class Progress extends BaseModel {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId;
+    }
+
+    public boolean isSolved() {
+        return solved;
+    }
+
+    public void setSolved(boolean solved) {
+        this.solved = solved;
     }
 }

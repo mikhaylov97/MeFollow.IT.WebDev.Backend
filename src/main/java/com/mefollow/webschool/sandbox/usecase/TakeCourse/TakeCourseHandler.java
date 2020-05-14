@@ -3,10 +3,7 @@ package com.mefollow.webschool.sandbox.usecase.TakeCourse;
 import com.mefollow.webschool.sandbox.domain.base.Course;
 import com.mefollow.webschool.sandbox.domain.dto.BriefCourseDto;
 import com.mefollow.webschool.sandbox.domain.dto.FullCourseDto;
-import com.mefollow.webschool.sandbox.infrastructure.repository.ChapterRepository;
-import com.mefollow.webschool.sandbox.infrastructure.repository.CourseRepository;
-import com.mefollow.webschool.sandbox.infrastructure.repository.LessonRepository;
-import com.mefollow.webschool.sandbox.infrastructure.repository.ProgressRepository;
+import com.mefollow.webschool.sandbox.infrastructure.repository.*;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,15 +17,18 @@ public class TakeCourseHandler {
 
     private static final String LESSON_URL_TEMPLATE = "/course/%s/lesson/%s";
 
+    private final TopicRepository topicRepository;
     private final CourseRepository courseRepository;
     private final LessonRepository lessonRepository;
     private final ChapterRepository chapterRepository;
     private final ProgressRepository progressRepository;
 
-    public TakeCourseHandler(CourseRepository courseRepository,
+    public TakeCourseHandler(TopicRepository topicRepository,
+                             CourseRepository courseRepository,
                              LessonRepository lessonRepository,
                              ChapterRepository chapterRepository,
                              ProgressRepository progressRepository) {
+        this.topicRepository = topicRepository;
         this.courseRepository = courseRepository;
         this.lessonRepository = lessonRepository;
         this.chapterRepository = chapterRepository;
@@ -49,12 +49,14 @@ public class TakeCourseHandler {
     }
 
     private Mono<FullCourseDto> constructFullCourseDtoWhenLearningIsNotStarted(Course course) {
-        return lessonRepository.findFirstByCourseIdOrderByOrderIndex(course.getId())
-                .switchIfEmpty(error(LESSON_NOT_FOUND))
-                .map(firstLesson -> {
-                    final var continueUrl = format(LESSON_URL_TEMPLATE, course.getId(), firstLesson.getId());
-                    return new FullCourseDto(course, continueUrl, false);
-                });
+        return topicRepository.findFirstByCourseIdOrderByOrderIndex(course.getId())
+                .switchIfEmpty(error(TOPIC_NOT_FOUND))
+                .flatMap(topic -> lessonRepository.findFirstByTopicIdOrderByOrderIndex(topic.getId())
+                        .switchIfEmpty(error(LESSON_NOT_FOUND))
+                        .map(firstLesson -> {
+                            final var continueUrl = format(LESSON_URL_TEMPLATE, course.getId(), firstLesson.getId());
+                            return new FullCourseDto(course, continueUrl, false);
+                        }));
     }
 
     public Flux<BriefCourseDto> takeAllCourses() {

@@ -3,26 +3,24 @@ package com.mefollow.webschool.sandbox.domain.base;
 import com.mefollow.webschool.core.domain.BaseModel;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "sandbox-lessons")
-public class Lesson extends BaseModel {
-    private String topicId;
+@Document(collection = "sandbox-topics")
+public class Topic extends BaseModel {
+    private String courseId;
     private String title;
-    private String description;
     private int orderIndex;
 
-    public Lesson(String topicId, String title, String description, int orderIndex) {
-        this.topicId = topicId;
+    public Topic(String courseId, String title, int orderIndex) {
+        this.courseId = courseId;
         this.title = title;
-        this.description = description;
         this.orderIndex = orderIndex;
     }
 
-    public String getTopicId() {
-        return topicId;
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setTopicId(String topicId) {
-        this.topicId = topicId;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
     public String getTitle() {
@@ -31,14 +29,6 @@ public class Lesson extends BaseModel {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public int getOrderIndex() {

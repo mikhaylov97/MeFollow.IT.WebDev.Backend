@@ -11,13 +11,16 @@ public class SandboxException extends CoreException {
 
     private static final String EXCEPTION_BASE_CODE = "errors.backend.resource.";
 
+    public static final SandboxException PROGRESS_NOT_FOUND = notFound("progress");
     public static final SandboxException CHAPTER_NOT_FOUND = notFound("chapter");
     public static final SandboxException LESSON_NOT_FOUND = notFound("lesson");
+    public static final SandboxException TOPIC_NOT_FOUND = notFound("topic");
     public static final SandboxException COURSE_NOT_FOUND = notFound("course");
     public static final SandboxException SANDBOX_RESOURCE_NOT_FOUND = notFound("sandboxResource");
     public static final SandboxException SANDBOX_RESOURCE_BUNDLE_NOT_FOUND = notFound("sandboxResourceBundle");
     public static final SandboxException SANDBOX_RESOURCE_FORBIDDEN = forbidden("sandboxResourceForbidden");
     public static final SandboxException SANDBOX_RESOURCE_BUNDLE_FORBIDDEN = forbidden("sandboxResourceBundleForbidden");
+    public static final SandboxException CHAPTER_IS_NOT_SOLVED = conflict("chapterIsNotSolved");
     public static final SandboxException SANDBOX_RESOURCES_INCONSISTENCY = conflict("sandboxResourcesInconsistency");
     public static final SandboxException WRONG_SANDBOX_RESOURCE_TYPE = conflict("wrongSandboxResourceType", "type");
 

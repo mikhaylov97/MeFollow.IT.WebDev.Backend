@@ -1,10 +1,15 @@
 package com.mefollow.webschool.sandbox.usecase.TakeLesson;
 
+import com.mefollow.webschool.sandbox.domain.base.Chapter;
 import com.mefollow.webschool.sandbox.domain.base.Progress;
+import com.mefollow.webschool.sandbox.domain.base.SandboxResource;
+import com.mefollow.webschool.sandbox.domain.base.SandboxResourceBundle;
 import com.mefollow.webschool.sandbox.domain.dto.LessonDto;
 import com.mefollow.webschool.sandbox.infrastructure.repository.*;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
 
 import static com.mefollow.webschool.sandbox.domain.base.SandboxException.*;
 import static java.lang.String.format;
@@ -44,14 +49,15 @@ public class TakeLessonHandler {
                                 .switchIfEmpty(error(CHAPTER_NOT_FOUND))
                                 .zipWith(chapterRepository.countAllByLessonId(lesson.getId()))
                                 .flatMap(chapter -> sandboxResourceBundleRepository.findByChapterIdAndUserId(chapter.getT1().getId(), command.getUserId())
-                                        .switchIfEmpty(error(SANDBOX_RESOURCE_BUNDLE_NOT_FOUND))
+                                        .switchIfEmpty(createDefaultSandboxResourceBundle(command.getUserId(), chapter.getT1()))
                                         .flatMap(bundle -> sandboxResourceRepository.findAllByBundleId(bundle.getId())
                                                 .collectList()
                                                 .flatMap(resources -> {
                                                     if (resources.isEmpty()) return error(SANDBOX_RESOURCES_INCONSISTENCY);
 
                                                     final var bundleUrl = format(BUNDLE_URL_TEMPLATE, bundle.getId());
-                                                    final var lessonDto = new LessonDto(lesson, chapter.getT1(), chapter.getT2().intValue(), bundle.getId(), bundleUrl);
+                                                    final var displayTheory = chapter.getT1().getOrderIndex() == 1;
+                                                    final var lessonDto = new LessonDto(lesson, chapter.getT1(), chapter.getT2().intValue(), progress.isSolved(), displayTheory, bundle.getId(), bundleUrl);
                                                     resources.forEach(resource -> {
                                                         switch (resource.getType()) {
                                                             case HTML:
@@ -75,5 +81,18 @@ public class TakeLessonHandler {
                 .switchIfEmpty(error(CHAPTER_NOT_FOUND))
                 .map(firstChapter -> new Progress(userId, firstChapter.getId(), courseId))
                 .flatMap(progressRepository::save);
+    }
+
+    private Mono<SandboxResourceBundle> createDefaultSandboxResourceBundle(String userId, Chapter chapter) {
+        final var bundle = new SandboxResourceBundle();
+        bundle.setUserId(userId);
+        bundle.setChapterId(chapter.getId());
+
+        return sandboxResourceBundleRepository.save(bundle)
+                .flatMap(savedBundle -> {
+                    final var resources = new ArrayList<SandboxResource>();
+                    chapter.getInitialState().forEach((type, content) -> resources.add(new SandboxResource(savedBundle.getId(), content, type)));
+                    return sandboxResourceRepository.saveAll(resources).then(just(savedBundle));
+                });
     }
 }
